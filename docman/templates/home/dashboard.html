@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard{% endblock %}
+{% block body %}
+<div class="dashboard">
+    <div class="container">
+        <div class="row">
+            <div class="dashboard-list">
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="dashboard-item">
+                        <a href="{{url_for('document.get_documents')}}"><h3>All Documents</h3></a>
+                        <h2> All Documents</h2>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="dashboard-item">
+                        <a href="document/my_documents.html"><h3>My Documents</h3></a>
+                        <h2> My Documents</h2>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="dashboard-item">
+                        <a href="{{url_for('document.get_documents')}}"><h3>Private Documents</h3></a>
+                        <h2> Private Documents</h2>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="dashboard-item">
+                        <a href="{{ url_for('document.create') }}"><h3>New Documents</h3></a>
+                        <h2> New Document</h2>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

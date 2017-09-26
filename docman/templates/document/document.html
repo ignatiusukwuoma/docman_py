@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Document{% endblock %}
+{% block body %}
+<div class="content-section">
+  <div class="outer">
+    <div class="middle">
+      <div class="inner">
+        <h1 style="text-align:center;">{{document.title}}</h1>
+          <small>{{document.access}}</small>
+        <p>{{document.content}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
