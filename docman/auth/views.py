@@ -14,6 +14,7 @@ def register():
     Handles requests to the /register route
     :return: login or register page
     """
+    new_account = True
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(
@@ -32,7 +33,7 @@ def register():
 
         return redirect(url_for('home.dashboard'))
 
-    return render_template('auth/register.html', title='Register', form=form)
+    return render_template('auth/register.html', title='Register', form=form, new_account=new_account)
 
 
 @auth.route('/login', methods=['GET', 'POST'])

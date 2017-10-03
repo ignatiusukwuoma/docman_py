@@ -4,7 +4,11 @@
 {% block body %}
 <div class="content-section">
   <div class="center">
+    {% if new_account %}
     <h1>Register for an account</h1>
+    {% else %}
+    <h1>Edit your profile</h1>
+    {% endif %}
     <br/>
     {{ wtf.quick_form(form) }}
   </div>

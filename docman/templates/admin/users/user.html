@@ -1,11 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Documents{% endblock %}
+{% block title %}My Profile{% endblock %}
 {% block body %}
 <div class="content-section">
   <div class="outer">
     <div class="middle">
       <div class="inner">
-        <h1 style="text-align:center;">{{ title }}</h1>
+        <div>
+          <h1 style="text-align:center;">{{ title }}</h1>
+          <h1 style="text-align:center;">{{user.name}} ({{user.username}})</h1>
         {% if documents %}
           <hr class="intro-divider">
           <div class="container">
@@ -35,10 +37,11 @@
             <hr class="intro-divider">
         {% endif %}
           </div>
-          <a href="{{ url_for('document.create') }}" class="center-element btn btn-default btn-lg">
+          <a href="{{ url_for('admin.edit_profile', id=user.id) }}" class="center-element btn btn-default btn-lg">
             <i class="fa fa-plus"></i>
-            New Document
+            Edit Profile
           </a>
+        </div>
       </div>
     </div>
   </div>
