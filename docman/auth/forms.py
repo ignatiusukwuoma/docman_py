@@ -39,3 +39,13 @@ class RolesForm(FlaskForm):
     Form to create a new role
     """
     title = StringField('Title', validators=[DataRequired()])
+
+
+class EditProfileForm(FlaskForm):
+    """
+    Form for users to edit their profile
+    """
+    name = StringField('Full Name', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Edit Your Profile')

@@ -2,10 +2,10 @@ from flask import flash, url_for, redirect, render_template
 from flask_login import login_required, current_user
 from . import document
 from .forms import CreateDocument
-from sqlalchemy import desc
+from sqlalchemy import desc, and_, or_, not_, select
 
 from .. import db
-from ..models import Document
+from ..models import Document, User, Role
 
 
 @document.route('/document/create', methods=['GET', 'POST'])
@@ -41,13 +41,54 @@ def create():
 @login_required
 def get_documents():
     """
-    Get all documents
+    Get all documents the user is permitted to view
     :return: documents page
     """
-    documents = Document.query.\
+    same_role = User.query.filter_by(role_id=current_user.role_id).all()
+    same_role_list = [user.id for user in same_role]
+
+    documents = db.session.query(Document).join("user", "role"). \
+        filter(or_(Document.access == 'public',
+                   Document.user_id == current_user.id,
+                   (and_(Document.access == 'role', Document.user_id.in_(same_role_list))))). \
         order_by(desc(Document.created_at)).all()
 
     return render_template('document/documents.html', documents=documents, title='All Documents')
+
+
+def my_documents(id):
+    """
+    :return: the documents of the user
+    """
+    documents = db.session.query(Document). \
+        filter(Document.user_id == id). \
+        order_by(desc(Document.created_at)).all()
+    return documents
+
+
+@document.route('/documents/me')
+@login_required
+def get_my_documents():
+    """
+    Get all documents owned by the user
+    :return: my documents page
+    """
+    documents = my_documents(current_user.id)
+
+    return render_template('document/documents.html', documents=documents, title='My Documents')
+
+
+@document.route('/document/<int:id>', methods=['GET'])
+@login_required
+def get_document(id):
+    """
+    Opens up a document
+    :param id: the document id
+    :return: the single document page
+    """
+    doc = Document.query.get_or_404(id)
+
+    return render_template('document/document.html', document=doc, title="Single Document")
 
 
 @document.route('/document/edit/<int:id>', methods=['GET', 'POST'])
@@ -72,7 +113,7 @@ def edit_document(id):
         except:
             flash('Error: Document title already exists')
 
-        return redirect(url_for('document.get_documents'))
+        return redirect(url_for('document.get_document', id=document_to_edit.id))
 
     form.title.data = document_to_edit.title
     form.access.data = document_to_edit.access
@@ -80,18 +121,23 @@ def edit_document(id):
     return render_template('document/create.html', form=form, title="Edit Document", add_document=add_document)
 
 
-@document.route('/document/<int:id>', methods=['GET'])
+@document.route('/document/delete/<int:id>', methods=['GET'])
 @login_required
-def get_document(id):
+def delete_document(id):
     """
-    Opens up a document
-    :param id: the document id
-    :return: the single document page
+    Delete a document
+    :param id: id of the document
     """
     doc = Document.query.get_or_404(id)
+    if doc.user_id == current_user.id:
+        db.session.delete(doc)
+        db.session.commit()
+        flash('You have deleted a document')
 
-    return render_template('document/document.html', document=doc, title="Single Document")
+        return redirect(url_for('document.get_documents'))
 
+    flash('You do not have permission to delete this document')
+    return redirect(url_for('document.get_documents'))
 
 
 
