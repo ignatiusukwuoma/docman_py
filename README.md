@@ -15,3 +15,4 @@ Requirements
 
 To use this application, you need Flask installed on your computer.
 
+Run pip3 install -r requirements.txt
